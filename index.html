@@ -71,6 +71,21 @@ textarea { width: 100%; min-height: 90px; resize: vertical; border-radius: 10px;
   .grid { grid-template-columns: 1fr; }
   .card { padding: 12px; }
 }
+
+.tips-box {
+  background: rgba(57,213,255,.08);
+  border: 1px solid rgba(57,213,255,.25);
+  color: #dbeafe;
+  border-radius: 14px;
+  padding: 14px 16px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.tips-box strong {
+  color: white;
+}
+
 </style>
 </head>
 <body>
@@ -78,11 +93,19 @@ textarea { width: 100%; min-height: 90px; resize: vertical; border-radius: 10px;
 <h1>Eurovision Scorecard</h1>
 <p class="subtitle">Score each country from -10 to 10 for 🎵 Song, 🎭 Staging, 🎤 Performance and ⭐ Person. Notes are saved on your device but do not affect the total.</p>
 <div class="status">✅ JavaScript is running correctly.</div>
+
+<div class="tips-box">
+  <strong>Tips:</strong>
+  Tap a country's flag beside its name to reveal or hide the contestant image.
+  Use the “Show all images” button if you'd prefer to browse visually.
+</div>
+
 <section class="controls">
   <div class="button-row">
     <button id="sortPoints" type="button">Sort by points</button>
     <button id="sortAZ" class="secondary" type="button">Sort A–Z</button>
     <button id="sortRunningOrder" class="secondary" type="button">Running order</button>
+    <button id="toggleAllImages" class="secondary" type="button">Show all images</button>
     <button id="resetScores" class="danger" type="button">Reset scores</button>
   </div>
   <div>25 finalists loaded</div>
@@ -1554,6 +1577,32 @@ textarea { width: 100%; min-height: 90px; resize: vertical; border-radius: 10px;
   document.getElementById("sortPoints").addEventListener("click", sortByPoints);
   document.getElementById("sortAZ").addEventListener("click", sortAZ);
   document.getElementById("sortRunningOrder").addEventListener("click", sortRunningOrder);
+
+  let allImagesVisible = false;
+
+  document.getElementById("toggleAllImages").addEventListener("click", () => {
+
+    allImagesVisible = !allImagesVisible;
+
+    cards.forEach(card => {
+      const imageWrap = card.querySelector(".image-wrap");
+
+      if (allImagesVisible) {
+        card.classList.add("image-open");
+        imageWrap.setAttribute("aria-hidden", "false");
+      } else {
+        card.classList.remove("image-open");
+        imageWrap.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    document.getElementById("toggleAllImages").textContent =
+      allImagesVisible ? "Hide all images" : "Show all images";
+
+    saveData();
+  });
+
+
   document.getElementById("resetScores").addEventListener("click", resetScores);
 
   loadData();
