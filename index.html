@@ -4,47 +4,24 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Eurovision Scorecard</title>
-
 <style>
-* {
-  box-sizing: border-box;
-}
-
+* { box-sizing: border-box; }
 body {
   margin: 0;
   padding: 24px;
   font-family: Arial, Helvetica, sans-serif;
-  background: #111827;
+  background:
+    radial-gradient(circle at top left, rgba(255, 79, 216, .22), transparent 34rem),
+    radial-gradient(circle at top right, rgba(57, 213, 255, .18), transparent 32rem),
+    #111827;
   color: white;
 }
-
-.app {
-  max-width: 1300px;
-  margin: 0 auto;
-}
-
-h1 {
-  margin: 0 0 10px;
-  font-size: clamp(2.5rem, 7vw, 4.5rem);
-}
-
-.subtitle {
-  color: #cbd5e1;
-  margin-bottom: 20px;
-  line-height: 1.5;
-}
-
-.status {
-  background: #12351f;
-  color: #bbf7d0;
-  border-radius: 14px;
-  padding: 12px 14px;
-  margin-bottom: 20px;
-  font-weight: bold;
-}
-
+.app { max-width: 1400px; margin: 0 auto; }
+h1 { margin: 0 0 10px; font-size: clamp(2.5rem, 7vw, 4.5rem); line-height: .95; letter-spacing: -.05em; }
+.subtitle { color: #cbd5e1; margin-bottom: 20px; line-height: 1.5; }
+.status { background: #12351f; color: #bbf7d0; border-radius: 14px; padding: 12px 14px; margin-bottom: 20px; font-weight: bold; }
 .controls {
-  background: #1f2937;
+  background: rgba(31,41,55,.88);
   border: 1px solid rgba(255,255,255,0.12);
   border-radius: 16px;
   padding: 16px;
@@ -55,1057 +32,77 @@ h1 {
   flex-wrap: wrap;
   align-items: center;
 }
-
-.button-row {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
-button {
-  border: none;
-  border-radius: 999px;
-  padding: 12px 16px;
-  font-weight: bold;
-  cursor: pointer;
-  background: #39d5ff;
-  color: #111827;
-}
-
-button.secondary {
-  background: #e5e7eb;
-}
-
-button.danger {
-  background: #fecaca;
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 16px;
-}
-
-.card {
-  background: #1f2937;
-  border: 1px solid rgba(255,255,255,0.12);
-  border-radius: 16px;
-  padding: 16px;
-}
-
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 12px;
-  border-bottom: 1px solid rgba(255,255,255,0.12);
-  padding-bottom: 12px;
-  margin-bottom: 16px;
-}
-
-.country-name {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 1.35rem;
-  font-weight: 900;
-}
-
-.flag {
+.button-row { display: flex; gap: 10px; flex-wrap: wrap; }
+button { border: none; border-radius: 999px; padding: 12px 16px; font-weight: bold; cursor: pointer; background: #39d5ff; color: #111827; }
+button.secondary { background: #e5e7eb; }
+button.danger { background: #fecaca; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 18px; }
+.card { background: #1f2937; border: 1px solid rgba(255,255,255,0.12); border-radius: 18px; padding: 14px; overflow: hidden; }
+.image-wrap { display: none; position: relative; width: 100%; aspect-ratio: 16 / 9; border-radius: 14px; overflow: hidden; background: #0f172a; margin-bottom: 14px; }
+.card.image-open .image-wrap { display: block; }
+.image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.running-order { position: absolute; top: 10px; left: 10px; background: rgba(17,24,39,.82); color: #fff; border: 1px solid rgba(255,255,255,.2); border-radius: 999px; padding: 6px 10px; font-weight: 900; }
+.card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; border-bottom: 1px solid rgba(255,255,255,0.12); padding-bottom: 12px; margin-bottom: 16px; }
+.country-name { display: flex; align-items: center; gap: 10px; font-size: 1.35rem; font-weight: 900; }
+.flag-toggle {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
   font-size: 1.8rem;
+  line-height: 1;
+  box-shadow: none;
 }
-
-.rank {
-  color: #39d5ff;
-  margin-right: 6px;
-}
-
-.total {
-  background: rgba(255,255,255,0.1);
-  border-radius: 999px;
-  padding: 8px 12px;
-  font-weight: 900;
-  white-space: nowrap;
-}
-
-.slider-row {
-  background: rgba(17,24,39,0.5);
-  border-radius: 14px;
-  padding: 12px;
-  margin-bottom: 12px;
-}
-
-.slider-label-line {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 8px;
-}
-
-label {
-  font-weight: bold;
-  color: #cbd5e1;
-}
-
-output {
-  background: #39d5ff;
-  color: #111827;
-  border-radius: 999px;
-  padding: 5px 10px;
-  min-width: 44px;
-  text-align: center;
-  font-weight: 900;
-}
-
-input[type="range"] {
-  width: 100%;
-  accent-color: #39d5ff;
-  min-height: 44px;
-}
-
-.slider-scale {
-  display: flex;
-  justify-content: space-between;
-  color: #94a3b8;
-  font-size: 0.8rem;
-}
-
-.notes-label {
-  display: block;
-  margin-top: 14px;
-  margin-bottom: 8px;
-}
-
-textarea {
-  width: 100%;
-  min-height: 90px;
-  resize: vertical;
-  border-radius: 10px;
-  border: 1px solid rgba(255,255,255,0.12);
-  background: #111827;
-  color: white;
-  padding: 10px;
-  font: inherit;
-}
-
+.flag-toggle:hover { transform: scale(1.08); }
+.country-text { line-height: 1.1; }
+.entry-line { color: #cbd5e1; margin-top: 4px; line-height: 1.35; }
+.rank { color: #39d5ff; margin-right: 6px; }
+.total { background: rgba(255,255,255,0.1); border-radius: 999px; padding: 8px 12px; font-weight: 900; white-space: nowrap; }
+.slider-row { background: rgba(17,24,39,0.5); border-radius: 14px; padding: 12px; margin-bottom: 12px; }
+.slider-label-line { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+label { font-weight: bold; color: #cbd5e1; }
+output { background: #39d5ff; color: #111827; border-radius: 999px; padding: 5px 10px; min-width: 44px; text-align: center; font-weight: 900; }
+input[type="range"] { width: 100%; accent-color: #39d5ff; min-height: 44px; }
+.slider-scale { display: flex; justify-content: space-between; color: #94a3b8; font-size: 0.8rem; }
+.notes-label { display: block; margin-top: 14px; margin-bottom: 8px; }
+textarea { width: 100%; min-height: 90px; resize: vertical; border-radius: 10px; border: 1px solid rgba(255,255,255,0.12); background: #111827; color: white; padding: 10px; font: inherit; }
 @media (max-width: 600px) {
-  body {
-    padding: 14px;
-  }
-
-  .grid {
-    grid-template-columns: 1fr;
-  }
+  body { padding: 14px; }
+  .grid { grid-template-columns: 1fr; }
+  .card { padding: 12px; }
 }
 </style>
 </head>
-
 <body>
-
 <main class="app">
-
 <h1>Eurovision Scorecard</h1>
-
-<p class="subtitle">
-Score each country from -10 to 10 for 🎵 Song, 🎭 Staging, 🎤 Performance and ⭐ Person.
-Notes are saved on your device but do not affect the total.
-</p>
-
-<div class="status">
-✅ JavaScript is running correctly.
-</div>
-
+<p class="subtitle">Score each country from -10 to 10 for 🎵 Song, 🎭 Staging, 🎤 Performance and ⭐ Person. Notes are saved on your device but do not affect the total.</p>
+<div class="status">✅ JavaScript is running correctly.</div>
 <section class="controls">
   <div class="button-row">
-    <button id="sortPoints">Sort by points</button>
-    <button id="sortAZ" class="secondary">Sort A–Z</button>
-    <button id="resetScores" class="danger">Reset scores</button>
+    <button id="sortPoints" type="button">Sort by points</button>
+    <button id="sortAZ" class="secondary" type="button">Sort A–Z</button>
+    <button id="sortRunningOrder" class="secondary" type="button">Running order</button>
+    <button id="resetScores" class="danger" type="button">Reset scores</button>
   </div>
-
   <div>25 finalists loaded</div>
 </section>
-
 <section class="grid" id="countryGrid">
 
-    <article class="card" data-country="Albania">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇦🇱</span>
-          <span class="country-text">Albania</span>
-        </div>
-
-        <div class="total">0 pts</div>
+    <article class="card" data-country="Denmark" data-order="1">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/denmark_8rbh8gajpg/Denmark_8Rbh8gA-fill_size%3D2560x1600-focal_point%3D1283x368-focal_size%3D207x218-fill_size%3D2560x1600-focal_point%3D1283x368-focal_size%3D207x218.jpg" alt="Søren Torpegaard Lund, Denmark Eurovision entry" loading="lazy">
+        <div class="running-order">#1</div>
       </div>
 
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="albania-song">🎵 Song</label>
-            <output data-score-output for="albania-song">0</output>
-          </div>
-
-          <input
-            id="albania-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="albania-staging">🎭 Staging</label>
-            <output data-score-output for="albania-staging">0</output>
-          </div>
-
-          <input
-            id="albania-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="albania-performance">🎤 Performance</label>
-            <output data-score-output for="albania-performance">0</output>
-          </div>
-
-          <input
-            id="albania-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="albania-person">⭐ Person</label>
-            <output data-score-output for="albania-person">0</output>
-          </div>
-
-          <input
-            id="albania-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="albania-notes">📝 Notes</label>
-
-      <textarea id="albania-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Australia">
       <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇦🇺</span>
-          <span class="country-text">Australia</span>
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Denmark">🇩🇰</button>
+            <span class="country-text">Denmark</span>
+          </div>
+          <div class="entry-line">Søren Torpegaard Lund — <em>Før Vi Går Hjem</em></div>
         </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="australia-song">🎵 Song</label>
-            <output data-score-output for="australia-song">0</output>
-          </div>
-
-          <input
-            id="australia-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="australia-staging">🎭 Staging</label>
-            <output data-score-output for="australia-staging">0</output>
-          </div>
-
-          <input
-            id="australia-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="australia-performance">🎤 Performance</label>
-            <output data-score-output for="australia-performance">0</output>
-          </div>
-
-          <input
-            id="australia-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="australia-person">⭐ Person</label>
-            <output data-score-output for="australia-person">0</output>
-          </div>
-
-          <input
-            id="australia-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="australia-notes">📝 Notes</label>
-
-      <textarea id="australia-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Austria">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇦🇹</span>
-          <span class="country-text">Austria</span>
-        </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="austria-song">🎵 Song</label>
-            <output data-score-output for="austria-song">0</output>
-          </div>
-
-          <input
-            id="austria-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="austria-staging">🎭 Staging</label>
-            <output data-score-output for="austria-staging">0</output>
-          </div>
-
-          <input
-            id="austria-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="austria-performance">🎤 Performance</label>
-            <output data-score-output for="austria-performance">0</output>
-          </div>
-
-          <input
-            id="austria-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="austria-person">⭐ Person</label>
-            <output data-score-output for="austria-person">0</output>
-          </div>
-
-          <input
-            id="austria-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="austria-notes">📝 Notes</label>
-
-      <textarea id="austria-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Belgium">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇧🇪</span>
-          <span class="country-text">Belgium</span>
-        </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="belgium-song">🎵 Song</label>
-            <output data-score-output for="belgium-song">0</output>
-          </div>
-
-          <input
-            id="belgium-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="belgium-staging">🎭 Staging</label>
-            <output data-score-output for="belgium-staging">0</output>
-          </div>
-
-          <input
-            id="belgium-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="belgium-performance">🎤 Performance</label>
-            <output data-score-output for="belgium-performance">0</output>
-          </div>
-
-          <input
-            id="belgium-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="belgium-person">⭐ Person</label>
-            <output data-score-output for="belgium-person">0</output>
-          </div>
-
-          <input
-            id="belgium-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="belgium-notes">📝 Notes</label>
-
-      <textarea id="belgium-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Bulgaria">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇧🇬</span>
-          <span class="country-text">Bulgaria</span>
-        </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="bulgaria-song">🎵 Song</label>
-            <output data-score-output for="bulgaria-song">0</output>
-          </div>
-
-          <input
-            id="bulgaria-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="bulgaria-staging">🎭 Staging</label>
-            <output data-score-output for="bulgaria-staging">0</output>
-          </div>
-
-          <input
-            id="bulgaria-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="bulgaria-performance">🎤 Performance</label>
-            <output data-score-output for="bulgaria-performance">0</output>
-          </div>
-
-          <input
-            id="bulgaria-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="bulgaria-person">⭐ Person</label>
-            <output data-score-output for="bulgaria-person">0</output>
-          </div>
-
-          <input
-            id="bulgaria-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="bulgaria-notes">📝 Notes</label>
-
-      <textarea id="bulgaria-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Croatia">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇭🇷</span>
-          <span class="country-text">Croatia</span>
-        </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="croatia-song">🎵 Song</label>
-            <output data-score-output for="croatia-song">0</output>
-          </div>
-
-          <input
-            id="croatia-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="croatia-staging">🎭 Staging</label>
-            <output data-score-output for="croatia-staging">0</output>
-          </div>
-
-          <input
-            id="croatia-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="croatia-performance">🎤 Performance</label>
-            <output data-score-output for="croatia-performance">0</output>
-          </div>
-
-          <input
-            id="croatia-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="croatia-person">⭐ Person</label>
-            <output data-score-output for="croatia-person">0</output>
-          </div>
-
-          <input
-            id="croatia-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="croatia-notes">📝 Notes</label>
-
-      <textarea id="croatia-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Cyprus">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇨🇾</span>
-          <span class="country-text">Cyprus</span>
-        </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="cyprus-song">🎵 Song</label>
-            <output data-score-output for="cyprus-song">0</output>
-          </div>
-
-          <input
-            id="cyprus-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="cyprus-staging">🎭 Staging</label>
-            <output data-score-output for="cyprus-staging">0</output>
-          </div>
-
-          <input
-            id="cyprus-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="cyprus-performance">🎤 Performance</label>
-            <output data-score-output for="cyprus-performance">0</output>
-          </div>
-
-          <input
-            id="cyprus-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="cyprus-person">⭐ Person</label>
-            <output data-score-output for="cyprus-person">0</output>
-          </div>
-
-          <input
-            id="cyprus-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="cyprus-notes">📝 Notes</label>
-
-      <textarea id="cyprus-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Czechia">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇨🇿</span>
-          <span class="country-text">Czechia</span>
-        </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="czechia-song">🎵 Song</label>
-            <output data-score-output for="czechia-song">0</output>
-          </div>
-
-          <input
-            id="czechia-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="czechia-staging">🎭 Staging</label>
-            <output data-score-output for="czechia-staging">0</output>
-          </div>
-
-          <input
-            id="czechia-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="czechia-performance">🎤 Performance</label>
-            <output data-score-output for="czechia-performance">0</output>
-          </div>
-
-          <input
-            id="czechia-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="czechia-person">⭐ Person</label>
-            <output data-score-output for="czechia-person">0</output>
-          </div>
-
-          <input
-            id="czechia-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="czechia-notes">📝 Notes</label>
-
-      <textarea id="czechia-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Denmark">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇩🇰</span>
-          <span class="country-text">Denmark</span>
-        </div>
-
         <div class="total">0 pts</div>
       </div>
 
@@ -1113,326 +110,53 @@ Notes are saved on your device but do not affect the total.
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="denmark-song">🎵 Song</label>
-            <output data-score-output for="denmark-song">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="denmark-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="denmark-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="denmark-staging">🎭 Staging</label>
-            <output data-score-output for="denmark-staging">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="denmark-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="denmark-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="denmark-performance">🎤 Performance</label>
-            <output data-score-output for="denmark-performance">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="denmark-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="denmark-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="denmark-person">⭐ Person</label>
-            <output data-score-output for="denmark-person">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="denmark-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="denmark-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
 
       <label class="notes-label" for="denmark-notes">📝 Notes</label>
-
       <textarea id="denmark-notes" placeholder="Add notes..."></textarea>
     </article>
-    
-    <article class="card" data-country="Finland">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇫🇮</span>
-          <span class="country-text">Finland</span>
-        </div>
-
-        <div class="total">0 pts</div>
+    <article class="card" data-country="Germany" data-order="2">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/germanyjpg/Germany-fill_size%3D2560x1600-focal_point%3D1276x1003-focal_size%3D488x428-fill_size%3D2560x1600-focal_point%3D1276x1003-focal_size%3D488x428.jpg" alt="Sarah Engels, Germany Eurovision entry" loading="lazy">
+        <div class="running-order">#2</div>
       </div>
 
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="finland-song">🎵 Song</label>
-            <output data-score-output for="finland-song">0</output>
-          </div>
-
-          <input
-            id="finland-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="finland-staging">🎭 Staging</label>
-            <output data-score-output for="finland-staging">0</output>
-          </div>
-
-          <input
-            id="finland-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="finland-performance">🎤 Performance</label>
-            <output data-score-output for="finland-performance">0</output>
-          </div>
-
-          <input
-            id="finland-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="finland-person">⭐ Person</label>
-            <output data-score-output for="finland-person">0</output>
-          </div>
-
-          <input
-            id="finland-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="finland-notes">📝 Notes</label>
-
-      <textarea id="finland-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="France">
       <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇫🇷</span>
-          <span class="country-text">France</span>
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Germany">🇩🇪</button>
+            <span class="country-text">Germany</span>
+          </div>
+          <div class="entry-line">Sarah Engels — <em>Fire</em></div>
         </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="france-song">🎵 Song</label>
-            <output data-score-output for="france-song">0</output>
-          </div>
-
-          <input
-            id="france-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="france-staging">🎭 Staging</label>
-            <output data-score-output for="france-staging">0</output>
-          </div>
-
-          <input
-            id="france-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="france-performance">🎤 Performance</label>
-            <output data-score-output for="france-performance">0</output>
-          </div>
-
-          <input
-            id="france-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="france-person">⭐ Person</label>
-            <output data-score-output for="france-person">0</output>
-          </div>
-
-          <input
-            id="france-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="france-notes">📝 Notes</label>
-
-      <textarea id="france-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Germany">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇩🇪</span>
-          <span class="country-text">Germany</span>
-        </div>
-
         <div class="total">0 pts</div>
       </div>
 
@@ -1440,217 +164,53 @@ Notes are saved on your device but do not affect the total.
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="germany-song">🎵 Song</label>
-            <output data-score-output for="germany-song">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="germany-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="germany-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="germany-staging">🎭 Staging</label>
-            <output data-score-output for="germany-staging">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="germany-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="germany-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="germany-performance">🎤 Performance</label>
-            <output data-score-output for="germany-performance">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="germany-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="germany-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="germany-person">⭐ Person</label>
-            <output data-score-output for="germany-person">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="germany-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="germany-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
 
       <label class="notes-label" for="germany-notes">📝 Notes</label>
-
       <textarea id="germany-notes" placeholder="Add notes..."></textarea>
     </article>
-    
-    <article class="card" data-country="Greece">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇬🇷</span>
-          <span class="country-text">Greece</span>
-        </div>
-
-        <div class="total">0 pts</div>
+    <article class="card" data-country="Israel" data-order="3">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/israeljpg/Israel-fill_size%3D2560x1600-focal_point%3D1204x310-focal_size%3D259x267-fill_size%3D2560x1600-focal_point%3D1204x310-focal_size%3D259x267.jpg" alt="Noam Bettan, Israel Eurovision entry" loading="lazy">
+        <div class="running-order">#3</div>
       </div>
 
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="greece-song">🎵 Song</label>
-            <output data-score-output for="greece-song">0</output>
-          </div>
-
-          <input
-            id="greece-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="greece-staging">🎭 Staging</label>
-            <output data-score-output for="greece-staging">0</output>
-          </div>
-
-          <input
-            id="greece-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="greece-performance">🎤 Performance</label>
-            <output data-score-output for="greece-performance">0</output>
-          </div>
-
-          <input
-            id="greece-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="greece-person">⭐ Person</label>
-            <output data-score-output for="greece-person">0</output>
-          </div>
-
-          <input
-            id="greece-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="greece-notes">📝 Notes</label>
-
-      <textarea id="greece-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Israel">
       <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇮🇱</span>
-          <span class="country-text">Israel</span>
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Israel">🇮🇱</button>
+            <span class="country-text">Israel</span>
+          </div>
+          <div class="entry-line">Noam Bettan — <em>Michelle</em></div>
         </div>
-
         <div class="total">0 pts</div>
       </div>
 
@@ -1658,1089 +218,215 @@ Notes are saved on your device but do not affect the total.
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="israel-song">🎵 Song</label>
-            <output data-score-output for="israel-song">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="israel-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="israel-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="israel-staging">🎭 Staging</label>
-            <output data-score-output for="israel-staging">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="israel-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="israel-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="israel-performance">🎤 Performance</label>
-            <output data-score-output for="israel-performance">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="israel-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="israel-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="israel-person">⭐ Person</label>
-            <output data-score-output for="israel-person">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="israel-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="israel-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
 
       <label class="notes-label" for="israel-notes">📝 Notes</label>
-
       <textarea id="israel-notes" placeholder="Add notes..."></textarea>
     </article>
-    
-    <article class="card" data-country="Italy">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇮🇹</span>
-          <span class="country-text">Italy</span>
-        </div>
+    <article class="card" data-country="Belgium" data-order="4">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260507_corinne-cumming_ebu00040-croppedpng/260507_Corinne%20Cumming_EBU00040%20cropped-fill_size%3D2560x1600-focal_point%3D2481x936-focal_size%3D669x803.png" alt="ESSYLA, Belgium Eurovision entry" loading="lazy">
+        <div class="running-order">#4</div>
+      </div>
 
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Belgium">🇧🇪</button>
+            <span class="country-text">Belgium</span>
+          </div>
+          <div class="entry-line">ESSYLA — <em>Dancing on the Ice</em></div>
+        </div>
         <div class="total">0 pts</div>
       </div>
 
       
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="italy-song">🎵 Song</label>
-            <output data-score-output for="italy-song">0</output>
+            <label for="belgium-song">🎵 Song</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="italy-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="belgium-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="italy-staging">🎭 Staging</label>
-            <output data-score-output for="italy-staging">0</output>
+            <label for="belgium-staging">🎭 Staging</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="italy-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="belgium-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="italy-performance">🎤 Performance</label>
-            <output data-score-output for="italy-performance">0</output>
+            <label for="belgium-performance">🎤 Performance</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="italy-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="belgium-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="italy-person">⭐ Person</label>
-            <output data-score-output for="italy-person">0</output>
+            <label for="belgium-person">⭐ Person</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="italy-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="belgium-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
 
-      <label class="notes-label" for="italy-notes">📝 Notes</label>
-
-      <textarea id="italy-notes" placeholder="Add notes..."></textarea>
+      <label class="notes-label" for="belgium-notes">📝 Notes</label>
+      <textarea id="belgium-notes" placeholder="Add notes..."></textarea>
     </article>
-    
-    <article class="card" data-country="Lithuania">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇱🇹</span>
-          <span class="country-text">Lithuania</span>
-        </div>
+    <article class="card" data-country="Albania" data-order="5">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/test-alispng/test%20alis-fill_size%3D2560x1600-focal_point%3D2429x1123-focal_size%3D778x842.png" alt="Alis, Albania Eurovision entry" loading="lazy">
+        <div class="running-order">#5</div>
+      </div>
 
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Albania">🇦🇱</button>
+            <span class="country-text">Albania</span>
+          </div>
+          <div class="entry-line">Alis — <em>Nân</em></div>
+        </div>
         <div class="total">0 pts</div>
       </div>
 
       
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="lithuania-song">🎵 Song</label>
-            <output data-score-output for="lithuania-song">0</output>
+            <label for="albania-song">🎵 Song</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="lithuania-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="albania-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="lithuania-staging">🎭 Staging</label>
-            <output data-score-output for="lithuania-staging">0</output>
+            <label for="albania-staging">🎭 Staging</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="lithuania-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="albania-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="lithuania-performance">🎤 Performance</label>
-            <output data-score-output for="lithuania-performance">0</output>
+            <label for="albania-performance">🎤 Performance</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="lithuania-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="albania-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="lithuania-person">⭐ Person</label>
-            <output data-score-output for="lithuania-person">0</output>
+            <label for="albania-person">⭐ Person</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="lithuania-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="albania-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
 
-      <label class="notes-label" for="lithuania-notes">📝 Notes</label>
-
-      <textarea id="lithuania-notes" placeholder="Add notes..."></textarea>
+      <label class="notes-label" for="albania-notes">📝 Notes</label>
+      <textarea id="albania-notes" placeholder="Add notes..."></textarea>
     </article>
-    
-    <article class="card" data-country="Malta">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇲🇹</span>
-          <span class="country-text">Malta</span>
-        </div>
+    <article class="card" data-country="Greece" data-order="6">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/greecejpg/Greece-fill_size%3D2560x1600-focal_point%3D1241x405-focal_size%3D310x253-fill_size%3D2560x1600-focal_point%3D1241x405-focal_size%3D310x253.jpg" alt="Akylas, Greece Eurovision entry" loading="lazy">
+        <div class="running-order">#6</div>
+      </div>
 
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Greece">🇬🇷</button>
+            <span class="country-text">Greece</span>
+          </div>
+          <div class="entry-line">Akylas — <em>Ferto</em></div>
+        </div>
         <div class="total">0 pts</div>
       </div>
 
       
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="malta-song">🎵 Song</label>
-            <output data-score-output for="malta-song">0</output>
+            <label for="greece-song">🎵 Song</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="malta-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="greece-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="malta-staging">🎭 Staging</label>
-            <output data-score-output for="malta-staging">0</output>
+            <label for="greece-staging">🎭 Staging</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="malta-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="greece-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="malta-performance">🎤 Performance</label>
-            <output data-score-output for="malta-performance">0</output>
+            <label for="greece-performance">🎤 Performance</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="malta-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="greece-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
-            <label for="malta-person">⭐ Person</label>
-            <output data-score-output for="malta-person">0</output>
+            <label for="greece-person">⭐ Person</label>
+            <output>0</output>
           </div>
-
-          <input
-            id="malta-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="greece-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
 
-      <label class="notes-label" for="malta-notes">📝 Notes</label>
-
-      <textarea id="malta-notes" placeholder="Add notes..."></textarea>
+      <label class="notes-label" for="greece-notes">📝 Notes</label>
+      <textarea id="greece-notes" placeholder="Add notes..."></textarea>
     </article>
-    
-    <article class="card" data-country="Moldova">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇲🇩</span>
-          <span class="country-text">Moldova</span>
-        </div>
-
-        <div class="total">0 pts</div>
+    <article class="card" data-country="Ukraine" data-order="7">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260509_corinne-cumming_ebu00070jpg/260509_Corinne%20Cumming_EBU00070-fill_size%3D2560x1600-focal_point%3D2527x2748-focal_size%3D1516x1741.jpg" alt="LELÉKA, Ukraine Eurovision entry" loading="lazy">
+        <div class="running-order">#7</div>
       </div>
 
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="moldova-song">🎵 Song</label>
-            <output data-score-output for="moldova-song">0</output>
-          </div>
-
-          <input
-            id="moldova-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="moldova-staging">🎭 Staging</label>
-            <output data-score-output for="moldova-staging">0</output>
-          </div>
-
-          <input
-            id="moldova-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="moldova-performance">🎤 Performance</label>
-            <output data-score-output for="moldova-performance">0</output>
-          </div>
-
-          <input
-            id="moldova-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="moldova-person">⭐ Person</label>
-            <output data-score-output for="moldova-person">0</output>
-          </div>
-
-          <input
-            id="moldova-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="moldova-notes">📝 Notes</label>
-
-      <textarea id="moldova-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Norway">
       <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇳🇴</span>
-          <span class="country-text">Norway</span>
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Ukraine">🇺🇦</button>
+            <span class="country-text">Ukraine</span>
+          </div>
+          <div class="entry-line">LELÉKA — <em>Ridnym</em></div>
         </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="norway-song">🎵 Song</label>
-            <output data-score-output for="norway-song">0</output>
-          </div>
-
-          <input
-            id="norway-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="norway-staging">🎭 Staging</label>
-            <output data-score-output for="norway-staging">0</output>
-          </div>
-
-          <input
-            id="norway-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="norway-performance">🎤 Performance</label>
-            <output data-score-output for="norway-performance">0</output>
-          </div>
-
-          <input
-            id="norway-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="norway-person">⭐ Person</label>
-            <output data-score-output for="norway-person">0</output>
-          </div>
-
-          <input
-            id="norway-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="norway-notes">📝 Notes</label>
-
-      <textarea id="norway-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Poland">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇵🇱</span>
-          <span class="country-text">Poland</span>
-        </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="poland-song">🎵 Song</label>
-            <output data-score-output for="poland-song">0</output>
-          </div>
-
-          <input
-            id="poland-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="poland-staging">🎭 Staging</label>
-            <output data-score-output for="poland-staging">0</output>
-          </div>
-
-          <input
-            id="poland-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="poland-performance">🎤 Performance</label>
-            <output data-score-output for="poland-performance">0</output>
-          </div>
-
-          <input
-            id="poland-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="poland-person">⭐ Person</label>
-            <output data-score-output for="poland-person">0</output>
-          </div>
-
-          <input
-            id="poland-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="poland-notes">📝 Notes</label>
-
-      <textarea id="poland-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Romania">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇷🇴</span>
-          <span class="country-text">Romania</span>
-        </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="romania-song">🎵 Song</label>
-            <output data-score-output for="romania-song">0</output>
-          </div>
-
-          <input
-            id="romania-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="romania-staging">🎭 Staging</label>
-            <output data-score-output for="romania-staging">0</output>
-          </div>
-
-          <input
-            id="romania-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="romania-performance">🎤 Performance</label>
-            <output data-score-output for="romania-performance">0</output>
-          </div>
-
-          <input
-            id="romania-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="romania-person">⭐ Person</label>
-            <output data-score-output for="romania-person">0</output>
-          </div>
-
-          <input
-            id="romania-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="romania-notes">📝 Notes</label>
-
-      <textarea id="romania-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Serbia">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇷🇸</span>
-          <span class="country-text">Serbia</span>
-        </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="serbia-song">🎵 Song</label>
-            <output data-score-output for="serbia-song">0</output>
-          </div>
-
-          <input
-            id="serbia-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="serbia-staging">🎭 Staging</label>
-            <output data-score-output for="serbia-staging">0</output>
-          </div>
-
-          <input
-            id="serbia-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="serbia-performance">🎤 Performance</label>
-            <output data-score-output for="serbia-performance">0</output>
-          </div>
-
-          <input
-            id="serbia-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="serbia-person">⭐ Person</label>
-            <output data-score-output for="serbia-person">0</output>
-          </div>
-
-          <input
-            id="serbia-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="serbia-notes">📝 Notes</label>
-
-      <textarea id="serbia-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Sweden">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇸🇪</span>
-          <span class="country-text">Sweden</span>
-        </div>
-
-        <div class="total">0 pts</div>
-      </div>
-
-      
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="sweden-song">🎵 Song</label>
-            <output data-score-output for="sweden-song">0</output>
-          </div>
-
-          <input
-            id="sweden-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="sweden-staging">🎭 Staging</label>
-            <output data-score-output for="sweden-staging">0</output>
-          </div>
-
-          <input
-            id="sweden-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="sweden-performance">🎤 Performance</label>
-            <output data-score-output for="sweden-performance">0</output>
-          </div>
-
-          <input
-            id="sweden-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-        <div class="slider-row">
-          <div class="slider-label-line">
-            <label for="sweden-person">⭐ Person</label>
-            <output data-score-output for="sweden-person">0</output>
-          </div>
-
-          <input
-            id="sweden-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
-        </div>
-        
-
-      <label class="notes-label" for="sweden-notes">📝 Notes</label>
-
-      <textarea id="sweden-notes" placeholder="Add notes..."></textarea>
-    </article>
-    
-    <article class="card" data-country="Ukraine">
-      <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇺🇦</span>
-          <span class="country-text">Ukraine</span>
-        </div>
-
         <div class="total">0 pts</div>
       </div>
 
@@ -2748,108 +434,377 @@ Notes are saved on your device but do not affect the total.
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="ukraine-song">🎵 Song</label>
-            <output data-score-output for="ukraine-song">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="ukraine-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="ukraine-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="ukraine-staging">🎭 Staging</label>
-            <output data-score-output for="ukraine-staging">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="ukraine-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="ukraine-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="ukraine-performance">🎤 Performance</label>
-            <output data-score-output for="ukraine-performance">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="ukraine-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="ukraine-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="ukraine-person">⭐ Person</label>
-            <output data-score-output for="ukraine-person">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="ukraine-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="ukraine-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
 
       <label class="notes-label" for="ukraine-notes">📝 Notes</label>
-
       <textarea id="ukraine-notes" placeholder="Add notes..."></textarea>
     </article>
-    
-    <article class="card" data-country="United Kingdom">
+    <article class="card" data-country="Australia" data-order="8">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260509_corinne-cumming_ebu00077jpg/260509_Corinne%20Cumming_EBU00077-fill_size%3D2560x1600-focal_point%3D2589x2108-focal_size%3D1106x1618.jpg" alt="Delta Goodrem, Australia Eurovision entry" loading="lazy">
+        <div class="running-order">#8</div>
+      </div>
+
       <div class="card-header">
-        <div class="country-name">
-          <span class="flag">🇬🇧</span>
-          <span class="country-text">United Kingdom</span>
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Australia">🇦🇺</button>
+            <span class="country-text">Australia</span>
+          </div>
+          <div class="entry-line">Delta Goodrem — <em>Eclipse</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="australia-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="australia-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="australia-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="australia-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="australia-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="australia-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="australia-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="australia-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
 
+      <label class="notes-label" for="australia-notes">📝 Notes</label>
+      <textarea id="australia-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Serbia" data-order="9">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260507_corinne-cumming_ebu00062jpg/260507_Corinne%20Cumming_EBU00062-fill_size%3D2560x1600-focal_point%3D2507x3355-focal_size%3D901x942.jpg" alt="LAVINA, Serbia Eurovision entry" loading="lazy">
+        <div class="running-order">#9</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Serbia">🇷🇸</button>
+            <span class="country-text">Serbia</span>
+          </div>
+          <div class="entry-line">LAVINA — <em>Kraj Mene</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="serbia-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="serbia-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="serbia-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="serbia-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="serbia-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="serbia-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="serbia-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="serbia-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="serbia-notes">📝 Notes</label>
+      <textarea id="serbia-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Malta" data-order="10">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260509_corinne-cumming_ebu00036jpg/260509_Corinne%20Cumming_EBU00036-fill_size%3D2560x1600-focal_point%3D2614x1017-focal_size%3D437x519.jpg" alt="AIDAN, Malta Eurovision entry" loading="lazy">
+        <div class="running-order">#10</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Malta">🇲🇹</button>
+            <span class="country-text">Malta</span>
+          </div>
+          <div class="entry-line">AIDAN — <em>Bella</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="malta-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="malta-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="malta-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="malta-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="malta-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="malta-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="malta-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="malta-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="malta-notes">📝 Notes</label>
+      <textarea id="malta-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Czechia" data-order="11">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/daniel-zizka_finals__img7135_dcg99uzjpg/Daniel%20Zizka_finals__IMG7135_dcG99Uz-fill_size%3D2560x1600-focal_point%3D765x673-focal_size%3D418x375-fill_size%3D2560x1600-focal_point%3D765x673-focal_size%3D418x375.jpg" alt="Daniel Zizka, Czechia Eurovision entry" loading="lazy">
+        <div class="running-order">#11</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Czechia">🇨🇿</button>
+            <span class="country-text">Czechia</span>
+          </div>
+          <div class="entry-line">Daniel Zizka — <em>CROSSROADS</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="czechia-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="czechia-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="czechia-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="czechia-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="czechia-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="czechia-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="czechia-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="czechia-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="czechia-notes">📝 Notes</label>
+      <textarea id="czechia-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Bulgaria" data-order="12">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260508_corinne-cumming_ebu00085-croppedpng/260508_Corinne%20Cumming_EBU00085%20cropped-fill_size%3D2560x1600.png" alt="DARA, Bulgaria Eurovision entry" loading="lazy">
+        <div class="running-order">#12</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Bulgaria">🇧🇬</button>
+            <span class="country-text">Bulgaria</span>
+          </div>
+          <div class="entry-line">DARA — <em>Bangaranga</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="bulgaria-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="bulgaria-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="bulgaria-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="bulgaria-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="bulgaria-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="bulgaria-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="bulgaria-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="bulgaria-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="bulgaria-notes">📝 Notes</label>
+      <textarea id="bulgaria-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Croatia" data-order="13">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260506_corinne-cumming_ebu00170jpg/260506_Corinne%20Cumming_EBU00170-fill_size%3D2560x1600-focal_point%3D2732x2138-focal_size%3D942x1208.jpg" alt="LELEK, Croatia Eurovision entry" loading="lazy">
+        <div class="running-order">#13</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Croatia">🇭🇷</button>
+            <span class="country-text">Croatia</span>
+          </div>
+          <div class="entry-line">LELEK — <em>Andromeda</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="croatia-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="croatia-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="croatia-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="croatia-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="croatia-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="croatia-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="croatia-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="croatia-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="croatia-notes">📝 Notes</label>
+      <textarea id="croatia-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="United Kingdom" data-order="14">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260509_corinne-cumming_ebu00021jpg/260509_Corinne%20Cumming_EBU00021-fill_size%3D2560x1600-focal_point%3D1513x2026-focal_size%3D610x683.jpg" alt="LOOK MUM NO COMPUTER, United Kingdom Eurovision entry" loading="lazy">
+        <div class="running-order">#14</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for United Kingdom">🇬🇧</button>
+            <span class="country-text">United Kingdom</span>
+          </div>
+          <div class="entry-line">LOOK MUM NO COMPUTER — <em>Eins, Zwei, Drei</em></div>
+        </div>
         <div class="total">0 pts</div>
       </div>
 
@@ -2857,254 +812,754 @@ Notes are saved on your device but do not affect the total.
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="united-kingdom-song">🎵 Song</label>
-            <output data-score-output for="united-kingdom-song">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="united-kingdom-song"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="united-kingdom-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="united-kingdom-staging">🎭 Staging</label>
-            <output data-score-output for="united-kingdom-staging">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="united-kingdom-staging"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="united-kingdom-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="united-kingdom-performance">🎤 Performance</label>
-            <output data-score-output for="united-kingdom-performance">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="united-kingdom-performance"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="united-kingdom-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
         <div class="slider-row">
           <div class="slider-label-line">
             <label for="united-kingdom-person">⭐ Person</label>
-            <output data-score-output for="united-kingdom-person">0</output>
+            <output>0</output>
           </div>
-
-          <input
-            id="united-kingdom-person"
-            type="range"
-            min="-10"
-            max="10"
-            step="1"
-            value="0"
-            data-score-input
-          >
-
-          <div class="slider-scale">
-            <span>-10</span>
-            <span>0</span>
-            <span>10</span>
-          </div>
+          <input id="united-kingdom-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
         </div>
-        
 
       <label class="notes-label" for="united-kingdom-notes">📝 Notes</label>
-
       <textarea id="united-kingdom-notes" placeholder="Add notes..."></textarea>
     </article>
-    
+    <article class="card" data-country="France" data-order="15">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/monroe26jpg/Monroe26-fill_size%3D2560x1600-focal_point%3D1030x757-focal_size%3D402x426-fill_size%3D2560x1600-focal_point%3D1030x757-focal_size%3D402x426.jpg" alt="Monroe, France Eurovision entry" loading="lazy">
+        <div class="running-order">#15</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for France">🇫🇷</button>
+            <span class="country-text">France</span>
+          </div>
+          <div class="entry-line">Monroe — <em>Regarde !</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="france-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="france-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="france-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="france-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="france-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="france-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="france-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="france-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="france-notes">📝 Notes</label>
+      <textarea id="france-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Moldova" data-order="16">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260506_corinne-cumming_ebu00028jpg/260506_Corinne%20Cumming_EBU00028-fill_size%3D2560x1600-focal_point%3D2223x683-focal_size%3D587x595.jpg" alt="Satoshi, Moldova Eurovision entry" loading="lazy">
+        <div class="running-order">#16</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Moldova">🇲🇩</button>
+            <span class="country-text">Moldova</span>
+          </div>
+          <div class="entry-line">Satoshi — <em>Viva, Moldova!</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="moldova-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="moldova-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="moldova-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="moldova-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="moldova-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="moldova-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="moldova-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="moldova-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="moldova-notes">📝 Notes</label>
+      <textarea id="moldova-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Finland" data-order="17">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/linda_lampenius_x_pete_parkkonen_music_video_still_credit_nelli_kentta_lcyg46bjpg/Linda_Lampenius_x_Pete_Parkkonen_music_video_still_Credit_Nelli_kentta_LCYG46b-fill_size%3D2560x1600-focal_point%3D2546x913-focal_size%3D968x704-fill_size%3D2560x1600-focal_point%3D2546x913-focal_size%3D968x704.jpg" alt="Linda Lampenius x Pete Parkkonen, Finland Eurovision entry" loading="lazy">
+        <div class="running-order">#17</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Finland">🇫🇮</button>
+            <span class="country-text">Finland</span>
+          </div>
+          <div class="entry-line">Linda Lampenius x Pete Parkkonen — <em>Liekinheitin</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="finland-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="finland-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="finland-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="finland-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="finland-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="finland-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="finland-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="finland-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="finland-notes">📝 Notes</label>
+      <textarea id="finland-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Poland" data-order="18">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260507_corinne-cumming_ebu00044jpg/260507_Corinne%20Cumming_EBU00044-fill_size%3D2560x1600-focal_point%3D3089x2391-focal_size%3D1320x1254.jpg" alt="ALICJA, Poland Eurovision entry" loading="lazy">
+        <div class="running-order">#18</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Poland">🇵🇱</button>
+            <span class="country-text">Poland</span>
+          </div>
+          <div class="entry-line">ALICJA — <em>Pray</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="poland-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="poland-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="poland-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="poland-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="poland-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="poland-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="poland-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="poland-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="poland-notes">📝 Notes</label>
+      <textarea id="poland-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Lithuania" data-order="19">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/lithuaniajpg/Lithuania-fill_size%3D2560x1600-focal_point%3D1306x690-focal_size%3D570x459-fill_size%3D2560x1600-focal_point%3D1306x690-focal_size%3D570x459.jpg" alt="Lion Ceccah, Lithuania Eurovision entry" loading="lazy">
+        <div class="running-order">#19</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Lithuania">🇱🇹</button>
+            <span class="country-text">Lithuania</span>
+          </div>
+          <div class="entry-line">Lion Ceccah — <em>Sólo Quiero Más</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="lithuania-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="lithuania-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="lithuania-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="lithuania-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="lithuania-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="lithuania-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="lithuania-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="lithuania-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="lithuania-notes">📝 Notes</label>
+      <textarea id="lithuania-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Sweden" data-order="20">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260506_corinne-cumming_ebu00130jpg/260506_Corinne%20Cumming_EBU00130-fill_size%3D2560x1600-focal_point%3D2631x2507-focal_size%3D1247x1445.jpg" alt="FELICIA, Sweden Eurovision entry" loading="lazy">
+        <div class="running-order">#20</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Sweden">🇸🇪</button>
+            <span class="country-text">Sweden</span>
+          </div>
+          <div class="entry-line">FELICIA — <em>My System</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="sweden-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="sweden-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="sweden-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="sweden-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="sweden-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="sweden-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="sweden-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="sweden-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="sweden-notes">📝 Notes</label>
+      <textarea id="sweden-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Cyprus" data-order="21">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/cyprus_qo5gwlojpg/Cyprus_qO5gWlo-fill_size%3D2560x1600-focal_point%3D880x1054-focal_size%3D629x507-fill_size%3D2560x1600-focal_point%3D880x1054-focal_size%3D629x507.jpg" alt="Antigoni, Cyprus Eurovision entry" loading="lazy">
+        <div class="running-order">#21</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Cyprus">🇨🇾</button>
+            <span class="country-text">Cyprus</span>
+          </div>
+          <div class="entry-line">Antigoni — <em>JALLA</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="cyprus-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="cyprus-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="cyprus-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="cyprus-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="cyprus-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="cyprus-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="cyprus-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="cyprus-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="cyprus-notes">📝 Notes</label>
+      <textarea id="cyprus-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Italy" data-order="22">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/italyjpg/Italy-fill_size%3D2560x1600-focal_point%3D1410x1119-focal_size%3D732x755-fill_size%3D2560x1600-focal_point%3D1410x1119-focal_size%3D732x755.jpg" alt="Sal Da Vinci, Italy Eurovision entry" loading="lazy">
+        <div class="running-order">#22</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Italy">🇮🇹</button>
+            <span class="country-text">Italy</span>
+          </div>
+          <div class="entry-line">Sal Da Vinci — <em>Per Sempre Sì</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="italy-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="italy-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="italy-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="italy-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="italy-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="italy-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="italy-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="italy-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="italy-notes">📝 Notes</label>
+      <textarea id="italy-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Norway" data-order="23">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260509_corinne-cumming_ebu00100jpg/260509_Corinne%20Cumming_EBU00100-fill_size%3D2560x1600-focal_point%3D2681x2529-focal_size%3D1249x1475.jpg" alt="JONAS LOVV, Norway Eurovision entry" loading="lazy">
+        <div class="running-order">#23</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Norway">🇳🇴</button>
+            <span class="country-text">Norway</span>
+          </div>
+          <div class="entry-line">JONAS LOVV — <em>YA YA YA</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="norway-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="norway-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="norway-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="norway-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="norway-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="norway-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="norway-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="norway-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="norway-notes">📝 Notes</label>
+      <textarea id="norway-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Romania" data-order="24">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260508_corinne-cumming_ebu00236jpg/260508_Corinne%20Cumming_EBU00236-fill_size%3D2560x1600-focal_point%3D2629x1604-focal_size%3D687x726.jpg" alt="Alexandra Căpitănescu, Romania Eurovision entry" loading="lazy">
+        <div class="running-order">#24</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Romania">🇷🇴</button>
+            <span class="country-text">Romania</span>
+          </div>
+          <div class="entry-line">Alexandra Căpitănescu — <em>Choke Me</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="romania-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="romania-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="romania-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="romania-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="romania-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="romania-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="romania-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="romania-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="romania-notes">📝 Notes</label>
+      <textarea id="romania-notes" placeholder="Add notes..."></textarea>
+    </article>
+    <article class="card" data-country="Austria" data-order="25">
+      <div class="image-wrap" aria-hidden="true">
+        <img src="https://storage.googleapis.com/eurovision-com.appspot.com/renditions/public/cms/260509_corinne-cumming_ebu00018_croppedpng/260509_Corinne%20Cumming_EBU00018_cropped-fill_size%3D2560x1600.png" alt="COSMÓ, Austria Eurovision entry" loading="lazy">
+        <div class="running-order">#25</div>
+      </div>
+
+      <div class="card-header">
+        <div>
+          <div class="country-name">
+            <button class="flag-toggle" type="button" aria-label="Show image for Austria">🇦🇹</button>
+            <span class="country-text">Austria</span>
+          </div>
+          <div class="entry-line">COSMÓ — <em>Tanzschein</em></div>
+        </div>
+        <div class="total">0 pts</div>
+      </div>
+
+      
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="austria-song">🎵 Song</label>
+            <output>0</output>
+          </div>
+          <input id="austria-song" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="austria-staging">🎭 Staging</label>
+            <output>0</output>
+          </div>
+          <input id="austria-staging" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="austria-performance">🎤 Performance</label>
+            <output>0</output>
+          </div>
+          <input id="austria-performance" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+        <div class="slider-row">
+          <div class="slider-label-line">
+            <label for="austria-person">⭐ Person</label>
+            <output>0</output>
+          </div>
+          <input id="austria-person" type="range" min="-10" max="10" step="1" value="0" data-score-input>
+          <div class="slider-scale"><span>-10</span><span>0</span><span>10</span></div>
+        </div>
+
+      <label class="notes-label" for="austria-notes">📝 Notes</label>
+      <textarea id="austria-notes" placeholder="Add notes..."></textarea>
+    </article>
 </section>
-
 </main>
-
 <script>
 (function() {
-
-  const storageKey = "eurovision-finalists-scorecard";
+  const storageKey = "eurovision-finalists-scorecard-flag-click-images";
   const cards = Array.from(document.querySelectorAll(".card"));
   const grid = document.getElementById("countryGrid");
 
   function updateOutput(input) {
-    const row = input.closest(".slider-row");
-    row.querySelector("output").textContent = input.value;
+    input.closest(".slider-row").querySelector("output").textContent = input.value;
   }
 
   function updateTotal(card) {
     let total = 0;
-
     card.querySelectorAll('input[type="range"]').forEach(input => {
       total += Number(input.value);
       updateOutput(input);
     });
-
     card.querySelector(".total").textContent = total + " pts";
   }
 
-  function updateAllTotals() {
-    cards.forEach(updateTotal);
-  }
+  function updateAllTotals() { cards.forEach(updateTotal); }
 
   function saveData() {
     const data = {};
-
     cards.forEach(card => {
       const country = card.dataset.country;
-
       data[country] = {
         scores: [],
-        notes: card.querySelector("textarea").value
+        notes: card.querySelector("textarea").value,
+        imageOpen: card.classList.contains("image-open")
       };
-
-      card.querySelectorAll('input[type="range"]').forEach(input => {
-        data[country].scores.push(input.value);
-      });
+      card.querySelectorAll('input[type="range"]').forEach(input => data[country].scores.push(input.value));
     });
-
     localStorage.setItem(storageKey, JSON.stringify(data));
   }
 
   function loadData() {
     let data = {};
-
-    try {
-      data = JSON.parse(localStorage.getItem(storageKey)) || {};
-    } catch(error) {
-      data = {};
-    }
-
+    try { data = JSON.parse(localStorage.getItem(storageKey)) || {}; } catch(error) { data = {}; }
     cards.forEach(card => {
       const country = card.dataset.country;
-
       if (!data[country]) return;
-
-      const sliders = card.querySelectorAll('input[type="range"]');
-
-      sliders.forEach((slider, index) => {
-        if (data[country].scores[index] !== undefined) {
-          slider.value = data[country].scores[index];
-        }
+      card.querySelectorAll('input[type="range"]').forEach((slider, index) => {
+        if (data[country].scores[index] !== undefined) slider.value = data[country].scores[index];
       });
-
       card.querySelector("textarea").value = data[country].notes || "";
+      if (data[country].imageOpen) {
+        card.classList.add("image-open");
+        card.querySelector(".image-wrap").setAttribute("aria-hidden", "false");
+      }
     });
+  }
+
+  function setCardName(card, rank) {
+    const countryText = card.dataset.country;
+    const flagButton = card.querySelector(".flag-toggle").outerHTML;
+    card.querySelector(".country-name").innerHTML = (rank ? '<span class="rank">#' + rank + '</span>' : '') + flagButton + '<span class="country-text">' + countryText + '</span>';
+    wireFlag(card);
   }
 
   function sortByPoints() {
     cards.sort((a, b) => {
       const totalA = Number(a.querySelector(".total").textContent.replace(" pts", ""));
       const totalB = Number(b.querySelector(".total").textContent.replace(" pts", ""));
-
-      return totalB - totalA;
+      return totalB - totalA || a.dataset.country.localeCompare(b.dataset.country);
     });
-
-    cards.forEach((card, index) => {
-      const countryText = card.querySelector(".country-text").textContent;
-      const flag = card.querySelector(".flag").outerHTML;
-
-      card.querySelector(".country-name").innerHTML =
-        '<span class="rank">#' + (index + 1) + '</span>' +
-        flag +
-        '<span class="country-text">' + countryText + '</span>';
-
-      grid.appendChild(card);
-    });
+    cards.forEach((card, index) => { setCardName(card, index + 1); grid.appendChild(card); });
   }
 
   function sortAZ() {
-    cards.sort((a, b) => {
-      return a.dataset.country.localeCompare(b.dataset.country);
-    });
+    cards.sort((a, b) => a.dataset.country.localeCompare(b.dataset.country));
+    cards.forEach(card => { setCardName(card, null); grid.appendChild(card); });
+  }
 
-    cards.forEach(card => {
-      const countryText = card.querySelector(".country-text").textContent;
-      const flag = card.querySelector(".flag").outerHTML;
-
-      card.querySelector(".country-name").innerHTML =
-        flag +
-        '<span class="country-text">' + countryText + '</span>';
-
-      grid.appendChild(card);
-    });
+  function sortRunningOrder() {
+    cards.sort((a, b) => Number(a.dataset.order) - Number(b.dataset.order));
+    cards.forEach(card => { setCardName(card, null); grid.appendChild(card); });
   }
 
   function resetScores() {
     if (!confirm("Reset all scores and notes?")) return;
-
     cards.forEach(card => {
-      card.querySelectorAll('input[type="range"]').forEach(input => {
-        input.value = 0;
-      });
-
+      card.querySelectorAll('input[type="range"]').forEach(input => input.value = 0);
       card.querySelector("textarea").value = "";
-
+      card.classList.remove("image-open");
+      card.querySelector(".image-wrap").setAttribute("aria-hidden", "true");
       updateTotal(card);
     });
-
     localStorage.removeItem(storageKey);
   }
 
-  document.addEventListener("input", event => {
+  function wireFlag(card) {
+    const flagButton = card.querySelector(".flag-toggle");
+    const imageWrap = card.querySelector(".image-wrap");
+    flagButton.addEventListener("click", () => {
+      card.classList.toggle("image-open");
+      imageWrap.setAttribute("aria-hidden", card.classList.contains("image-open") ? "false" : "true");
+      saveData();
+    });
+  }
 
+  cards.forEach(wireFlag);
+
+  document.addEventListener("input", event => {
     if (event.target.matches('input[type="range"]')) {
       updateTotal(event.target.closest(".card"));
       saveData();
     }
-
-    if (event.target.matches("textarea")) {
-      saveData();
-    }
-
+    if (event.target.matches("textarea")) saveData();
   });
 
   document.getElementById("sortPoints").addEventListener("click", sortByPoints);
   document.getElementById("sortAZ").addEventListener("click", sortAZ);
+  document.getElementById("sortRunningOrder").addEventListener("click", sortRunningOrder);
   document.getElementById("resetScores").addEventListener("click", resetScores);
 
   loadData();
   updateAllTotals();
-  sortAZ();
-
+  sortRunningOrder();
 })();
 </script>
-
 </body>
 </html>
