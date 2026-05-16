@@ -86,10 +86,47 @@ textarea { width: 100%; min-height: 90px; resize: vertical; border-radius: 10px;
   color: white;
 }
 
+
+.controls {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 14px 30px rgba(0,0,0,.25);
+}
+
+.back-to-top {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 30;
+  background: #39d5ff;
+  color: #111827;
+  box-shadow: 0 12px 30px rgba(0,0,0,.35);
+  display: none;
+}
+
+.back-to-top.visible {
+  display: block;
+}
+
+@media (max-width: 600px) {
+  .controls {
+    top: 0;
+    margin-left: -4px;
+    margin-right: -4px;
+  }
+
+  .back-to-top {
+    right: 14px;
+    bottom: 14px;
+  }
+}
+
 </style>
 </head>
 <body>
-<main class="app">
+<main class="app" id="top">
 <h1>Eurovision Scorecard</h1>
 <p class="subtitle">Score each country from -10 to 10 for 🎵 Song, 🎭 Staging, 🎤 Performance and ⭐ Person. Notes are saved on your device but do not affect the total.</p>
 <div class="status">✅ JavaScript is running correctly.</div>
@@ -1463,12 +1500,28 @@ textarea { width: 100%; min-height: 90px; resize: vertical; border-radius: 10px;
       <textarea id="austria-notes" placeholder="Add notes..."></textarea>
     </article>
 </section>
+<button id="backToTop" class="back-to-top" type="button" aria-label="Back to top">↑ Top</button>
 </main>
 <script>
 (function() {
   const storageKey = "eurovision-finalists-scorecard-flag-click-images";
   const cards = Array.from(document.querySelectorAll(".card"));
   const grid = document.getElementById("countryGrid");
+
+  const backToTop = document.getElementById("backToTop");
+
+  backToTop.addEventListener("click", () => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth"
+    });
+  });
+
+  window.addEventListener("scroll", () => {
+    backToTop.classList.toggle("visible", window.scrollY > 600);
+  });
+
+
 
   function updateOutput(input) {
     input.closest(".slider-row").querySelector("output").textContent = input.value;
